@@ -20,10 +20,13 @@ defmodule AisExplorerWeb.Router do
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AisExplorerWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", AisExplorerWeb, as: :api do
+    pipe_through :api
+
+    scope "/v1", as: :api_v1 do
+      resources "/position_reports", Api.V1.PositionReportsController, only: [:index]
+    end
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:ais_explorer, :dev_routes) do

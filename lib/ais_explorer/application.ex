@@ -17,6 +17,7 @@ defmodule AisExplorer.Application do
       # Start a worker by calling: AisExplorer.Worker.start_link(arg)
       # {AisExplorer.Worker, arg},
       {AisExplorer.Ais.Server, []},
+      {AisExplorer.Ais.Receiver, []},
       # Start to serve requests, typically the last entry
       AisExplorerWeb.Endpoint
     ]

@@ -24,6 +24,11 @@ config :ais_explorer, AisExplorer.Ais.Server,
   transmit_delay: 10_000,
   max_transmit_rate: 5_000
 
+# Configure the AIS receiver
+#
+# The `udp_port` is the port to listen for incoming messages
+config :ais_explorer, AisExplorer.Ais.Receiver, udp_port: 12345
+
 # Configures the endpoint
 config :ais_explorer, AisExplorerWeb.Endpoint,
   url: [host: "localhost"],

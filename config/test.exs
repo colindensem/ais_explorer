@@ -20,6 +20,11 @@ config :ais_explorer, AisExplorerWeb.Endpoint,
   secret_key_base: "NQ9sOy3ovIH4dWvwDPsnZNxz01UL3Xh9pX2q8NiRT5hXUV4x9lvH7K8tIG4Tk2zq",
   server: false
 
+# Configure the AIS receiver
+#
+# The `udp_port` is the port to listen for incoming messages
+config :ais_explorer, AisExplorer.Ais.Receiver, udp_port: 123_46
+
 # In test we don't send emails.
 config :ais_explorer, AisExplorer.Mailer, adapter: Swoosh.Adapters.Test
 

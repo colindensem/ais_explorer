@@ -36,6 +36,7 @@ A series of steps(modules) will be used to serve messages, receive, parse and wr
 _Note: We're purposefully skipping the AIS decode stage with the decoded sample data we're using._
 
 - AisExplorer.Ais.Server - A UDP server module, loads a file and serves messages over UDP
+- AisExplorer.Nmea.Parser - A parser for the data message to convert raw data into a storable standard
 
 ## Configuration
 

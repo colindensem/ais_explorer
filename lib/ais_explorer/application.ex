@@ -18,6 +18,7 @@ defmodule AisExplorer.Application do
       # {AisExplorer.Worker, arg},
       {AisExplorer.Ais.Server, []},
       {AisExplorer.Ais.Receiver, []},
+      {AisExplorer.Nmea.Writer, []},
       # Start to serve requests, typically the last entry
       AisExplorerWeb.Endpoint
     ]

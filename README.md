@@ -45,10 +45,24 @@ _Note: We're purposefully skipping the AIS decode stage with the decoded sample 
 The application has a few configuration choices, these can be reviewed in `config.exs`.
 
 - `config :ais_explorer, AisExplorer.Ais.Server` - The UDP server config
+- `config :ais_explorer, AisExplorer.Ais.Receiver` - The UDP receiver config
+- `config :ais_explorer, AisExplorer.Nmea.Writer` - The write buffer config
 
 ## Running the demo
 
-From a terminal shell, run `iex -S mix phx.server`. This will load the application, shortly afterwards you will see log info from the server and writer.
+From a terminal shell, run `iex -S mix phx.server`. This will load the application, shortly afterwards(depends on config) you will see log info from the server and writer.
+
+```
+[info] File transmission starting. 1000000 messages to send.
+[info] Buffer full, flushing to storage 2024-03-17 18:30:47.276717Z
+[info] Flushing 3000 events.
+[info] Buffer full, flushing to storage 2024-03-17 18:30:48.030055Z
+[info] Flushing 3000 events.
+[info] Buffer full, flushing to storage 2024-03-17 18:30:48.424029Z
+[info] Flushing 3000 events.
+[info] Buffer full, flushing to storage 2024-03-17 18:30:48.797167Z
+[info] Flushing 3000 events.
+```
 
 You can query the API at the following endpoints:
 
@@ -70,6 +84,8 @@ There is no pagination/offsets on this version of the api.
 --url 'http://localhost:4000/api/v1/position_reports?mmsi=367619920' \
 --header 'content-type: application/json'
 ```
+
+_Note: Each restart will rerun the server, receiver and writing, thus the record count will increase significantly._
 
 ## Development
 

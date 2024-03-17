@@ -26,7 +26,7 @@ defmodule AisExplorer.Ais.Receiver do
     # More sources or message types would add complexity here with a pattern match on the message type.
     case ParsedPosition.parse(data) do
       %AisExplorer.Nmea.ParsedPosition{mmsi: mmsi} = parsed_position when mmsi != 0 ->
-        # Writer.insert(parsed_position)
+        Writer.insert(parsed_position)
 
       %AisExplorer.Nmea.ParsedPosition{} = parsed_position ->
         Logger.error("Invalid MMSI: #{parsed_position}")

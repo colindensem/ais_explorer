@@ -29,6 +29,14 @@ config :ais_explorer, AisExplorer.Ais.Server,
 # The `udp_port` is the port to listen for incoming messages
 config :ais_explorer, AisExplorer.Ais.Receiver, udp_port: 12345
 
+# Configure the NMEA writer
+#
+# The `flush_interval_ms` is the interval at which to flush the buffer
+# The `max_buffer_size` is the maximum number of events to buffer before flushing
+config :ais_explorer, AisExplorer.Nmea.Writer,
+  flush_interval_ms: 5_000,
+  max_buffer_size: 3_000
+
 # Configures the endpoint
 config :ais_explorer, AisExplorerWeb.Endpoint,
   url: [host: "localhost"],

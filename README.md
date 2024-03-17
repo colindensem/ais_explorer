@@ -6,6 +6,21 @@ AIS data is supplied as a UDP stream of data in the form of NMEA sentences. Worl
 
 Decoded messages contain a position report comprising vessel ID, timestamp and geospatial position. Messages do not necessarily arrive in strict time order. Individual vessels update their position reports every 5-10 seconds.
 
+## Table of Contents
+
+- [AIS Explorer](#ais-explorer)
+  - [Table of Contents](#table-of-contents)
+  - [Test Data](#test-data)
+  - [Architecture Overview](#architecture-overview)
+  - [Configuration](#configuration)
+  - [Running the demo](#running-the-demo)
+    - [API Examples](#api-examples)
+  - [Development](#development)
+  - [Caveats](#caveats)
+  - [Summary](#summary)
+
+## Test Data
+
 AIS/NMEA data is generally protected. There however exists a few sources of historical data and live TCP feeds. Notably these two services were considered for this exploration:
 
 - [The Norwegian AIS network has an open and a closed component. Data is accessed in both cases via a standard internet connection.](https://kystverket.no/en/navigation-and-monitoring/ais/access-to-ais-data/)
@@ -69,7 +84,7 @@ You can query the API at the following endpoints:
 - by Vesel Name
 - by MMSI id
 
-### Examples
+### API Examples
 
 There is no pagination/offsets on this version of the api.
 
@@ -98,10 +113,32 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-## Learn more
+## Caveats
 
-- Official website: https://www.phoenixframework.org/
-- Guides: https://hexdocs.pm/phoenix/overview.html
-- Docs: https://hexdocs.pm/phoenix
-- Forum: https://elixirforum.com/c/phoenix-forum
-- Source: https://github.com/phoenixframework/phoenix
+During the development of the writer module, we encountered several notable limitations. Firstly, PostgreSQL imposes a parameter limit on statements, which directly affects the size of the batches we can insert. Batches larger than 3000 risk failure to insert records. Additionally, our fixed batch size of 3000 limits the number of rows processed per slow database operation, inevitably slowing down the ingestion rate. One potential solution could involve storing messages as BJSON in PostgreSQL, which would reduce parameters at the expense of indexing and searching capabilities. Another strategy could involve extracting key search fields to optimize query performance, though this might not be viable for all scenarios.
+
+To address these issues, one approach is to initiate a new Task for each flush operation to run asynchronously. However, this method rapidly exhausts the database connection pool, resulting in the loss of most records due to failed tasks. Task management and retry mechanisms could potentially mitigate this, but in a continuous feed environment, retries may eventually create a backlog.
+
+In concept, increasing resources, such as employing a larger database server pool, could alleviate some of these challenges. Alternatively, leveraging Mnesia to initially store messages and then using workers to process them into PostgreSQL could offer a solution. This approach could also support additional operations like smoothing, anomaly detection, or other processing needs.
+
+One significant limitation of the GenServer approach lies in its throughput. GenServers are inherently single-threaded, meaning they process messages one at a time. In high-throughput scenarios, this can lead to bottlenecks and reduced performance.
+
+In high-throughput situations where the limitations of a GenServer become apparent, an alternative approach is to use a task-based concurrency model with a supervised Task.Supervisor. This allows for concurrent execution of tasks, distributing the workload across multiple processes and potentially improving overall throughput.
+
+Using Task.Supervisor, tasks can be spawned to handle individual requests or units of work. These tasks can run concurrently, processing messages or performing operations in parallel. This approach can better utilize available system resources and improve scalability compared to the single-threaded nature of GenServers.
+
+Additionally, for even higher throughput and more fine-grained control over concurrency, leveraging lightweight processes with the help of libraries like Flow or Broadway could be beneficial. These libraries enable data processing pipelines and parallel execution of tasks across multiple CPU cores, further optimizing performance in high-throughput scenarios.
+
+Ultimately, the choice of concurrency model depends on the specific requirements of the application, the expected workload, and the desired level of scalability and performance.
+
+## Summary
+
+Looking back, while the Task-based concurrency model presents a step forward in managing high-throughput scenarios compared to GenServers, it's clear that there are other avenues worth exploring to further optimize performance and address potential scalability hurdles.
+
+One intriguing alternative is delving into message queuing systems like Kafka or RabbitMQ. Although I haven't had direct experience with these tools, they're known for their ability to handle large volumes of messages efficiently. Offloading message processing to dedicated message brokers could lead to improved throughput and better management of workload spikes.
+
+Another avenue of interest is investigating lightweight concurrency models offered by libraries like Flow or Broadway. These tools facilitate the creation of data processing pipelines and support parallel task execution across multiple CPU cores. While I haven't had hands-on experience with them, they seem promising in maximizing resource utilization and enhancing overall performance in high-throughput scenarios. The database write remains the bottleneck.
+
+Thus, selecting a performant data store optimized for write-heavy workloads could significantly impact system performance. Although I'm not directly familiar with technologies like TimescaleDB or Apache Cassandra, they're reputed for their capabilities in efficiently handling large volumes of writes. Choosing the right data store architecture tailored to the application's needs could ensure data persistence and scalability without compromising performance.
+
+To sum up, while the Task-based concurrency model offers an initial improvement in throughput, exploring alternatives such as message queuing systems, lightweight concurrency libraries, and performant data stores could unlock additional scalability and performance benefits. It's an exciting journey of discovery for anyone keen on optimizing system performance in high-throughput scenarios.

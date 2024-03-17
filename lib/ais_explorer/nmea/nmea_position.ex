@@ -30,8 +30,6 @@ defmodule AisExplorer.Nmea.NmeaPosition do
     field :vessel_name, :string
     field :vessel_type, :integer
     field :width, :integer
-
-    timestamps(type: :utc_datetime)
   end
 
   @doc false

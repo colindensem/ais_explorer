@@ -36,7 +36,9 @@ A series of steps(modules) will be used to serve messages, receive, parse and wr
 _Note: We're purposefully skipping the AIS decode stage with the decoded sample data we're using._
 
 - AisExplorer.Ais.Server - A UDP server module, loads a file and serves messages over UDP
+- AisExplorer.Ais.Receiver - A GenServer to receive UDP messages and handle the initial ingesting
 - AisExplorer.Nmea.Parser - A parser for the data message to convert raw data into a storable standard
+- AisExplorer.Nmea.Writer - A GenServer to batch messages into writes to the data store.
 
 ## Configuration
 
@@ -46,7 +48,28 @@ The application has a few configuration choices, these can be reviewed in `confi
 
 ## Running the demo
 
-To Follow
+From a terminal shell, run `iex -S mix phx.server`. This will load the application, shortly afterwards you will see log info from the server and writer.
+
+You can query the API at the following endpoints:
+
+- by Vesel Name
+- by MMSI id
+
+### Examples
+
+There is no pagination/offsets on this version of the api.
+
+```bash
+ curl --request GET \
+  --url 'http://localhost:4000/api/v1/position_reports?vessel_name=GEORGIA' \
+  --header 'content-type: application/json'
+```
+
+```bash
+ curl --request GET \
+--url 'http://localhost:4000/api/v1/position_reports?mmsi=367619920' \
+--header 'content-type: application/json'
+```
 
 ## Development
 

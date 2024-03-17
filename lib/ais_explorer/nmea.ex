@@ -54,4 +54,40 @@ defmodule AisExplorer.Nmea do
     |> NmeaPosition.changeset(attrs)
     |> Repo.insert()
   end
+
+  @doc """
+  Returns the list of nmea_positions for a given mssi reference
+
+  ## Examples
+
+      iex> search_by_mmsi(mmsi)
+      [%NmeaPosition{}, ...]
+
+  """
+  def search_by_mmsi(mmsi) do
+    query =
+      from np in NmeaPosition,
+        where: np.mmsi == ^mmsi,
+        order_by: [asc: np.timestamp]
+
+    Repo.all(query)
+  end
+
+  @doc """
+  Returns the list of nmea_positions for a given vessel name
+
+  ## Examples
+
+      iex> search_by_vessel_name("GloRIA")
+      [%NmeaPosition{}, ...]
+
+  """
+  def search_by_vessel_name(search_term) do
+    query =
+      from np in NmeaPosition,
+        where: ilike(np.vessel_name, ^"#{search_term}%"),
+        order_by: [asc: np.timestamp]
+
+    Repo.all(query)
+  end
 end

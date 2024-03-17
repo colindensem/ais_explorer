@@ -33,6 +33,24 @@ defmodule AisExplorer.NmeaTest do
       assert Nmea.list_nmea_positions() == [nmea_position]
     end
 
+    test "search_by_mmsi/1 returns all nmea_positions with given mmsi" do
+      _nmea_position_1 = nmea_position_fixture()
+      nmea_position_2 = nmea_position_fixture(mmsi: 367_176_310)
+      assert Nmea.search_by_mmsi(nmea_position_2.mmsi) == [nmea_position_2]
+    end
+
+    test "search_by_vessel_name/1 returns all nmea_positions for a given vessel name" do
+      _nmea_position_1 = nmea_position_fixture()
+      nmea_position_2 = nmea_position_fixture(vessel_name: "GLORIA")
+      assert Nmea.search_by_vessel_name("GlorIA") == [nmea_position_2]
+    end
+
+    test "search_by_vessel_name/1 returns all nmea_positions for partial vessel name" do
+      nmea_position_1 = nmea_position_fixture(vessel_name: "GLORY")
+      nmea_position_2 = nmea_position_fixture(vessel_name: "GLORIA")
+      assert Nmea.search_by_vessel_name("GloR") == [nmea_position_1, nmea_position_2]
+    end
+
     test "get_nmea_position!/1 returns the nmea_position with given id" do
       nmea_position = nmea_position_fixture()
       assert Nmea.get_nmea_position!(nmea_position.id) == nmea_position

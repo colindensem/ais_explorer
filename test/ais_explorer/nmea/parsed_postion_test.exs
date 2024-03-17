@@ -31,7 +31,9 @@ defmodule AisExplorer.Nmea.ParsedPositionTest do
 
   test "parsing invalid line" do
     line = "invalid line"
-    assert ParsedPosition.parse(line) == {:error, "Invalid NMEA sentence format"}
+
+    assert ParsedPosition.parse(line) ==
+             {:error, "Invalid NMEA sentence format: \"invalid line\""}
   end
 
   test "parsing line with missing values" do

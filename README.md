@@ -31,7 +31,17 @@ MMSI,BaseDateTime,LAT,LON,SOG,COG,Heading,VesselName,IMO,CallSign,VesselType,Sta
 
 ## Architecture Overview
 
-To Follow
+A series of steps(modules) will be used to serve messages, receive, parse and write to a data store.
+
+_Note: We're purposefully skipping the AIS decode stage with the decoded sample data we're using._
+
+- AisExplorer.Ais.Server - A UDP server module, loads a file and serves messages over UDP
+
+## Configuration
+
+The application has a few configuration choices, these can be reviewed in `config.exs`.
+
+- `config :ais_explorer, AisExplorer.Ais.Server` - The UDP server config
 
 ## Running the demo
 

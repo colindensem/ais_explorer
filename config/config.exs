@@ -11,6 +11,19 @@ config :ais_explorer,
   ecto_repos: [AisExplorer.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+# Configure the UDP server
+#
+# The `file_path` is the path to the file containing the sentences to transmit
+# The `broadcast_ip` and `broadcast_port` are the IP and port to broadcast to
+# The `transmit_delay` is the delay before sending any messages in microseconds
+# The `max_transmit_rate` is the rate/limit at which to transmit messages per second
+config :ais_explorer, AisExplorer.Ais.Server,
+  file_path: "priv/data/marine_cadastre_extract.csv",
+  broadcast_ip: {127, 0, 0, 1},
+  broadcast_port: 12345,
+  transmit_delay: 10_000,
+  max_transmit_rate: 5_000
+
 # Configures the endpoint
 config :ais_explorer, AisExplorerWeb.Endpoint,
   url: [host: "localhost"],

@@ -16,6 +16,7 @@ defmodule AisExplorer.Application do
       {Finch, name: AisExplorer.Finch},
       # Start a worker by calling: AisExplorer.Worker.start_link(arg)
       # {AisExplorer.Worker, arg},
+      {AisExplorer.Ais.Server, []},
       # Start to serve requests, typically the last entry
       AisExplorerWeb.Endpoint
     ]

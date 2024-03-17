@@ -4,7 +4,7 @@ defmodule AisExplorer.Nmea.ParsedPositionTest do
 
   test "parsing valid line" do
     line =
-      "123456789,2024-03-16T12:34:56,51.5074,-0.1278,10.5,180.0,90.0,Ship1,IMO12345,ABCD,1,2,100,20,5.5,9,A"
+      "123456789,2024-03-16T12:34:56,51.5074,-0.1278,10.5,180.0,90.0,Ship1,IMO12345,ABCD,1,2,100,20,5.5,9,A/r"
 
     expected_result = %AisExplorer.Nmea.ParsedPosition{
       call_sign: "ABCD",
@@ -37,7 +37,7 @@ defmodule AisExplorer.Nmea.ParsedPositionTest do
   end
 
   test "parsing line with missing values" do
-    line = "123456789,2024-03-16T12:34:57,,,,,90.0,Ship1,IMO12345,ABCD,1,9,,,,0,A"
+    line = "123456789,2024-03-16T12:34:57,,,,,90.0,Ship1,IMO12345,ABCD,1,9,,,,0,A/r"
 
     expected_result = %AisExplorer.Nmea.ParsedPosition{
       call_sign: "ABCD",

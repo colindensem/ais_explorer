@@ -48,7 +48,13 @@ defmodule AisExplorer.Nmea.ParsedPosition do
         }
 
   def parse(line) when is_binary(line) do
-    case String.split(line, ",", parts: 17) do
+    cleaned_line =
+      line
+      |> String.replace("/r", "")
+      |> String.trim()
+      |> String.split(",", parts: 17)
+
+    case cleaned_line do
       [
         mmsi_str,
         base_date_time,
